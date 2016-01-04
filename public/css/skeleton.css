@@ -1,0 +1,64 @@
+/* margin */
+*{margin:0;padding:0}
+
+/* body */
+body{font-family:'Open Sans',sans-serif;font-size:14px;color:#555}
+
+/* typography */
+h1,h2,h3,h4,h5,h6{font-family:'Open Sans Bold'}
+
+/* links */
+a{color:#606060;text-decoration:none;cursor:pointer}
+
+/* button */
+.button,button{display:inline-block;padding:4px 8px;text-decoration:none;white-space:nowrap;background-color:transparent;cursor:pointer;box-sizing:border-box;border:1px solid #ccc}
+
+/* list */
+ul{list-style:none}
+
+/* form */
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="text"],
+input[type="tel"],
+input[type="url"],
+input[type="password"],
+textarea,
+select{padding:2px 5px;height:28px;width:280px;background:#fff;border:1px solid #ccc;box-shadow:none;box-sizing:border-box;-webkit-appearance:none;-moz-appearance:none;appearance:none}
+input[type="checkbox"],input[type="radio"]{float:left;margin-right:7px;height:12px;width:12px;position:relative;top:3px;}
+label,legend{display:block;margin-bottom:.2rem;font-weight:600}
+legend{padding:0 5px}
+fieldset{border:1px solid #ccc;display:inline-block}
+form .row{margin-bottom:15px;}
+
+/* inner */
+.inner{position:relative;width:100%;max-width:1250px;margin:0 auto;box-sizing:border-box}
+
+/* code */
+code{padding:.2rem .5rem;margin:0 .2rem;font-size:90%;white-space:nowrap;background:#f1f1f1;border:1px solid #e1e1e1}
+pre > code{display:block;padding:1rem 1.5rem;white-space:pre}
+
+/* table */
+th,td{padding:12px 15px;text-align:left;border-bottom: 1px solid #e1e1e1}
+th:first-child,td:first-child{padding-left:0}
+th:last-child,td:last-child{padding-right:0}
+
+/* utils */
+.u-full-width{width:100%;box-sizing:border-box}
+.u-max-full-width{max-width:100%;box-sizing:border-box}
+.u-pull-right{float:right}
+.u-pull-left{float: left}
+
+/* alert */
+.alert{display:none;border:1px solid transparent;margin-bottom:15px;padding:10px}
+.alert p{margin-top:3px}
+.alert .label{font-weight:600}
+.alert .label::after{content:':'}
+.alert-error{background-color:#f2dede;border-color:#ebccd1;color:#a94442}
+.alert-warning{background-color:#fcf8e3;border-color:#faebcc;color:#a66d3b}
+.alert-info{background-color:#d9edf7;border-color:#bce8f1;color:#3183b9}
+.alert-success{background-color:#dff0d8;border-color:#d6e9c6;color:#3c763d}
+
+/* clearing */
+.inner:after,.row:after,.u-cf{content:"";display:table;clear:both}

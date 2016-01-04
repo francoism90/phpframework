@@ -1,0 +1,30 @@
+<?php
+namespace Sys;
+class Session {
+  public function __construct() {
+    $c = Arr::merge('config/session');
+
+    // Init Session
+    ini_set('session.save_handler', $c['init']['savehandler']);
+    ini_set('session.gc_maxlifetime', $c['init']['maxlifetime']);
+    session_save_path($c['init']['savepath']);
+    session_set_cookie_params(
+      $c['cookie']['lifetime'],
+      $c['cookie']['path'],
+      $c['cookie']['domain'],
+      $c['cookie']['secure'],
+      $c['cookie']['httponly']);
+    session_start();
+
+    // Pop. Session
+    Arr::set($c['start'], '_SESSION');
+    Arr::set($c['update'], '_SESSION', true);
+  }
+
+  public static function destroy(string $n) {
+		$p = session_get_cookie_params();
+		setcookie($n, '', time() - $p['lifetime'], $p['path'],
+			$p['domain'], $p['secure'], $p['httponly']);
+	}
+}
+?>

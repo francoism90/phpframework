@@ -1,0 +1,31 @@
+/* body */
+body{background:#fefefe;}
+
+/* inner */
+.inner{width:1024px}
+
+/* header */
+header{height:50px;background:#161616}
+header nav{float:left}
+header ul{margin:0}
+header ul li{float:left}
+header ul li a{float:left;display:block;line-height:50px;color:#fff;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:0 10px;margin:0 25px}
+header ul li a:first-child{padding-left:0;margin-left:0}
+header form{float:right;line-height:50px;}
+header button,header button:hover{border:0;padding:0 10px;color:#fff}
+header input{height:26px;border:0;background:#fff;width:200px}
+
+/* content */
+#content{margin-top:35px;margin-bottom:20px}
+
+/* list */
+.list .e{float:left;width:245px;height:275px;margin-right:10px;margin-bottom:5px;}
+.list img{float:left;width:245px;height:195px;}
+.list p{float:left;width:100%;padding:2px 0;line-height:18px;font-size:13px;}
+.list .tags{font-size:11px;}
+.pager{margin:1em 0;}
+.pager span{display:inline-block;width:1.8em;height:1.8em;line-height:1.8;text-align:center;cursor:pointer;background:#161616;color:#fff;margin-top:0.5em;margin-right:0.5em;}
+.pager span.active{background:#c00;}
+
+/* movie */
+#movie img{width:245px;height:195px;}}
