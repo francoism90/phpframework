@@ -20,7 +20,7 @@ class HTTP {
 	public static function buildUrl(array $a = array('pathStr','queryStr')) {
 		$r = '';
 		foreach ($a as $c)
-			$r.= self::$c();
+			$r.= ($c == 'queryStr' ? '?' : '') . self::$c();
 
 		return $r;
 	}
@@ -44,11 +44,11 @@ class HTTP {
 		if (!filter_var(self::uri(), FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED))
 			return '';
 
-		return '?' . http_build_query(self::query());
+		return parse_url(self::uri(), PHP_URL_QUERY);
 	}
 
 	public static function query() {
-		$p = empty(self::queryStr()) ?? parse_str(parse_url(htmlspecialchars_decode(self::uri()), PHP_URL_QUERY), $p);
+		parse_str(self::queryStr(), $p);
 		return $p;
 	}
 

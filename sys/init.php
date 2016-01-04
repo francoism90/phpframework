@@ -10,8 +10,10 @@ spl_autoload_extensions('.php,.class.php,.inc.php');
 spl_autoload_register();
 
 // CLI
-if (Sys\HTTP::cli())
-  return new Sys\CLI();
+if (Sys\HTTP::cli()) {
+  require(APP_DIR . 'cron.php');
+  exit;
+}
 
 // Classes
 $sess = new Sys\Session();

@@ -47,37 +47,32 @@ class Form {
   }
 
   public static function select(string $k, array $a, $c = 0) {
-    $i = 0;
     $r = '<select name="'.$k.'"';
     foreach ($a as $x => $v) {
-      $r.= '<option value="'.$i.'"';
-      if (is_array($c) && in_array($i, array_values($c)) || $i == $c)
+      $r.= '<option value="'.$x.'"';
+      if (is_array($c) && in_array($x, array_values($c)) || $x == $c)
         $r.= ' selected="selected"';
       $r.= ">$v</option>";
-      $i++;
     }
     return $r . '</select>';
   }
 
   public static function radio(string $k, array $a, $c = 0) {
-    $i = 1;
     foreach ($a as $x => $v) {
-      $r.= '<input type="radio" id="'.$k.'-'.$i.'" name="'.$k.'" value="'.$i.'"';
-      if (is_array($c) && in_array($i, array_values($c)) || $i == $c)
+      $r.= '<input type="radio" id="'.$k.'-'.$x.'" name="'.$k.'" value="'.$x.'"';
+      if (is_array($c) && in_array($x, array_values($c)) || $x == $c)
         $r.= ' checked="checked"';
-      $i++;
+      $r.= '> '.self::label("$k-$x", $v, true);
     }
     return $r;
   }
 
   public static function checkbox(string $k, array $a, $c = 0) {
-    $i = 1;
     foreach ($a as $x => $v) {
-      $r.= '<input type="checkbox" id="'.$k.'-'.$i.'" name="'.$k.'[]" value="'.$i.'"';
-      if (is_array($c) && in_array($i, array_values($c)) || $i == $c)
+      $r.= '<input type="checkbox" id="'.$k.'-'.$x.'" name="'.$k.'[]" value="'.$x.'"';
+      if (is_array($c) && in_array($x, array_values($c)) || $x == $c)
         $r.= ' checked="checked"';
-      $r.= '> '.self::label("$k-$i", $v, true);
-      $i++;
+      $r.= '> '.self::label("$k-$x", $v, true);
     }
     return $r;
   }

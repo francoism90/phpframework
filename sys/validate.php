@@ -41,6 +41,9 @@ class Validate {
       }
     }
 
+    if (empty($this->out))
+      HTTP::jsReply(_('Invalid data'));
+
     if (!empty($this->res)) {
       $m = Arr::merge('config/validate');
       foreach ($this->res as $k => $v) {
