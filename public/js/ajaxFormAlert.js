@@ -9,12 +9,16 @@ $('#ajaxForm').submit(function(event) {
     data: dataString,
 		success: function (resp) {
       if (typeof resp === "object") {
-        $('.row .msg').empty();
+        $("#alert").removeClass().empty().addClass('alert-error');
         $.each(resp, function(k, v) {
-          $("label[for='"+ k +"']").parent().append('<p class="msg">' + v + '</p>');
+          $("#alert").append('<p class="label">' + k + '</p>');
+          $.each(v, function(a, b) { $("#alert").append('<p>' + b + '</p>'); });
         });
+        $("#alert").fadeIn();
       }
-      else { $('#ajaxForm').html(resp); }
+      else {
+        $("#ajaxForm").html(resp);
+      }
     }
 	})
 	return false;
