@@ -1,7 +1,9 @@
 <?php self::inc('inc/header') ?>
-<h1><?= self::get('title') ?></h1>
-<?php $e = is_string(self::get('e')) ? array(self::get('e')) : self::get('e') ?>
-<?php foreach ($e as $k => $v): ?>
-<p><?= $v ?></p>
-<?php endforeach; ?>
+<?php if (is_string(self::get('msg'))): ?>
+  <p><?= self::get('msg') ?>
+<?php else: ?>
+  <?php foreach (self::get('msg') as $k => $v): ?>
+    <p><strong><?= $k ?>:</strong> <?= $v ?></p>
+  <?php endforeach; ?>
+<?php endif; ?>
 <?php self::inc('inc/footer') ?>

@@ -16,25 +16,16 @@ class View {
     return self::$var[$k];
   }
 
-  public static function inc(string $n, bool $b = null) {
+  public static function inc(string $n, bool $b = false) {
     if ($b) ob_start();
 		include("tpl/$n.php");
     if ($b) return ob_get_clean();
 	}
 
-  public static function js($e) {
-    HTTP::header('nocache');
-    HTTP::header('json');
-    exit(json_encode($e));
-  }
-
-  public static function except($e, string $h = 'bad-request') {
-    if (empty(self::get('title')))
-      self::set('title', _('Oops! An error has occurred'));
-
+  public static function except(array $e = array(), $h = 400) {
     HTTP::header('nocache');
     HTTP::header($h);
-    self::$var['e'] = $e;
+    self::mSet(array_merge(Arr::merge('config/view/except')[$h] ?: array(), $e));
     exit(self::inc('except'));
   }
 }

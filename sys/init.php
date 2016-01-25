@@ -17,7 +17,7 @@ if (Sys\HTTP::cli()) {
 
 // Classes
 $sess = new Sys\Session();
-//$loc = new Sys\Cl\Locale();
+$loc = new Sys\Locale();
 
 // App
 require_once(APP_DIR . 'init.php');

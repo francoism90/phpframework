@@ -1,20 +1,24 @@
 <?php
 namespace Sys;
 class Validate {
+  public $form = array();
   public $out = array();
   public $res = array();
 
-  public function __construct(string $n, array $p = array()) {
-    foreach (Arr::merge("config/form/$n") as $k => $v) {
-      $val = $p[$k] ?? $v['value'];
-
-      // array
-      if (is_array($val) && in_array($v['type'], array('radio','checkbox','select'))) {
-        foreach ($val as $aKey => $aVal) {
-          if (!array_key_exists($aVal, $v['option']))
+  public function __construct(string $n, array $p = array(), bool $fatal = false) {
+    $this->form = Arr::merge("config/form/$n");
+    foreach ($this->form as $k => $v) {
+      $val = $p[$k] ?: $v['value'];
+      if (in_array($v['type'], array('radio','checkbox','select'))) {
+        $arr = !is_array($val) ? array(0 => $val) : $val;
+        foreach ($arr as $aKey => $aVal) {
+          if (!array_key_exists($aVal, $v['option'])) {
             $this->res[$k][] = _('Please select a valid option');
+            continue;
+          }
         }
-        if (!empty($this->res[$k])) continue;
+        $this->out[$k] = $val;
+        continue;
       }
 
       // Santize
@@ -26,6 +30,7 @@ class Validate {
 
       // Empty
       if (empty($val)) {
+        $this->out[$k] = null;
         if (empty($v['optional'])) $this->res[$k][] = _('This field is required');
         continue;
       }
@@ -37,26 +42,36 @@ class Validate {
       if (!empty($v['filter_call'])) {
         foreach ($v['filter_call'] as $a => $s)
           if (!self::call($val, $s[0], $s[1]))
-            $this->res[$k][] = $s[0];
+            $this->res[$k][] = array($s[0], $s[1]);
       }
     }
 
-    if (empty($this->out))
-      HTTP::jsReply(_('Invalid data'));
-
-    if (!empty($this->res)) {
-      $m = Arr::merge('config/validate');
-      foreach ($this->res as $k => $v) {
-        if (ctype_graph($v))
-          $this->res[$k] = $m[$v] ?? $v;
-      }
-      HTTP::jsReply($this->res);
+    // On empty result/out
+    if (empty($this->out) || !empty($this->res)) {
+      if ($fatal) exit(var_dump($this->res));
+      throw new Except\JS($this->result());
     }
   }
 
+  public function result() {
+    $m = Arr::merge('config/validate/out');
+    $r = array();
+    foreach ($this->res as $k => $v) {
+      foreach ($v as $s) {
+        $l = $this->form[$k]['label'] ?: $k;
+        if (!is_array($s)) {
+          $r[$l][] = $m[$s] ?: $s;
+          continue;
+        }
+        // Replace with parameters (if needed)
+        $r[$l][] = !empty($m[$s[0]]) && is_array($s[1]) ? \Sys\Str::replace($m[$s[0]], $s[1]) : $m[$s[0]] ?: $s[0];
+      }
+    }
+    return $r;
+  }
+
   public static function call($v, string $m, $a = array()) {
-    if (function_exists($m)) return !empty($a) ? $m($v, implode(',', $a)) : $m($v);
-    return !empty($a) ? call_user_func($m, $v, implode(',', $a)) : call_user_func($m, $v);
+    return !empty($a) ? call_user_func_array($m, array_merge(array(0 => $v), $a)) : call_user_func($m, $v);
   }
 }
 ?>

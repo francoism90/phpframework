@@ -2,9 +2,7 @@
 namespace Sys;
 class Session {
   public function __construct() {
-    $c = Arr::merge('config/session');
-
-    // Init Session
+    $c = Arr::merge('config/session/handler');
     ini_set('session.save_handler', $c['init']['savehandler']);
     ini_set('session.gc_maxlifetime', $c['init']['maxlifetime']);
     session_save_path($c['init']['savepath']);
@@ -17,8 +15,15 @@ class Session {
     session_start();
 
     // Pop. Session
-    Arr::set($c['start'], '_SESSION');
-    Arr::set($c['update'], '_SESSION', true);
+    self::set(Arr::merge('config/session/start'));
+    self::set(Arr::merge('config/session/update'), true);
+  }
+
+  public static function set(array $a, bool $force = false) {
+    foreach ($a as $k => $v) {
+      if (empty($_SESSION[$k]) || $force)
+        $_SESSION[$k] = $v;
+    }
   }
 
   public static function destroy(string $n) {

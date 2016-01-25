@@ -20,7 +20,7 @@ class HTTP {
 	public static function buildUrl(array $a = array('pathStr','queryStr')) {
 		$r = '';
 		foreach ($a as $c)
-			$r.= ($c == 'queryStr' ? '?' : '') . self::$c();
+			$r.= !empty(self::$c()) ? ($c == 'queryStr' ? '?' : '') . self::$c() : '';
 
 		return $r;
 	}
@@ -50,6 +50,11 @@ class HTTP {
 	public static function query() {
 		parse_str(self::queryStr(), $p);
 		return $p;
+	}
+
+	public static function post() {
+		parse_str(file_get_contents('php://input'), $post);
+		return $post;
 	}
 
 	public static function ssl() {
@@ -82,30 +87,8 @@ class HTTP {
 		return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
 	}
 
-	public static function jsPost() {
-		self::header('nocache');
-		self::header('json');
-		if (!self::xmlhttprequest())
-			return array();
-
-		parse_str(file_get_contents('php://input'), $post);
-		return $post;
-	}
-
-	public static function jsReply($r) {
-    self::header('nocache');
-    self::header('json');
-		exit(json_encode($r));
-	}
-
-	public static function jsRedirect(string $url) {
-		self::header('nocache');
-    self::header('json');
-		exit(json_encode('<script>window.location.replace("'.$url.'");</script>'));
-	}
-
-	public static function redirect(string $uri = null, array $p = array()) {
-	  $url = self::host() . (empty($uri) ? $_SESSION['redirect'] : $uri);
+	public static function redirect(string $uri = '', array $p = array()) {
+	  $url = self::host() . ($_SESSION['redirect'] ?: $uri);
 	  if (in_array('ssl', $p) && self::scheme() == 'http')
 	    $url = str_replace('http://', 'https://', $url);
 
@@ -118,13 +101,13 @@ class HTTP {
 
 	  // JS
 	  if (in_array('js', $p))
-	    self::jsRedirect($url);
+	    JS::redirect($url, in_array('permanent', $p) ? 'replace' : 'href');
 
 	  header("Location: $url");
 	  exit;
 	}
 
-	public static function header(string $c) {
+	public static function header($c) {
 		switch ($c) {
 			case 'nocache':
 			case 'no-cache':
@@ -135,6 +118,7 @@ class HTTP {
 			case 'json':
 			case 'js':
 				header('Accept: application/json, text/javascript, */*; q=0.01');
+				header('Content-Type: application/json');
 				break;
 			case 400:
 			case 'bad-request':
@@ -155,6 +139,7 @@ class HTTP {
 				header('HTTP/1.1 500 Internal Server Error');
 				break;
 			case 301:
+			case 'moved':
 			case 'permanent':
 				header('HTTP/1.1 301 Moved Permanently');
 				break;

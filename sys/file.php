@@ -20,7 +20,7 @@ class File {
 			throw new Exception(_('Invalid Filesize'));
 	}
 
-	public function move(string $name, bool $force = null) {
+	public function move(string $name, bool $force = false) {
 		$dest = $this->file['target'] . basename($name);
 		if (!$force && file_exists($dest))
 			throw new Exception(_('File already exists'));

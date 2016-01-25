@@ -29,7 +29,7 @@ class User {
   }
 
   public static function get(array $a, string $s = 'OR') {
-    $valid = new Validate('user-get', $a);
+    $valid = new Validate('user-get', $a, true);
     return DB::sql(array(
       'table' => 'users',
       'data' => $valid->out,
@@ -38,7 +38,7 @@ class User {
   }
 
   public static function update(array $a) {
-    $valid = new Validate('user-update', $a);
+    $valid = new Validate('user-update', $a, true);
     return DB::sql(array(
       'mode' => 'update',
       'table' => 'users',
@@ -54,7 +54,7 @@ class User {
   public static function auth(int $gid = 1) {
     // Logged?
     if ($_SESSION['uid'] < 1) {
-      if (HTTP::pathStr() !== 'account/login')
+      if (HTTP::path()[0] !== 'account')
         $_SESSION['redirect'] = HTTP::buildUrl();
 
       return HTTP::redirect('account/login', array('ssl'));
@@ -74,26 +74,30 @@ class User {
   }
 
   public static function login() {
-    if (!empty(HTTP::jsPost())) {
-      $valid = new Validate('user-login', HTTP::jsPost());
+    if (!empty(JS::post())) {
+      try {
+        // Validate $_POST
+        $valid = new Validate('user-login', JS::post());
 
-      // Get User
-      $a = self::get(array('email' => $valid->out['email']));
-      if (empty($a))
-        View::js(array('email' => _('User does not exists')));
-      elseif (!password_verify($valid->out['password'], $a['passhash']))
-        View::js(array('password' => _('Invalid password given')));
-      elseif ($a['status'] == 1)
-        View::js(array('email' => _('This user needs to complete activation')));
+        // Check User
+        $a = self::get(array('email' => $valid->out['email']));
+        if (empty($a))
+          throw new Except\JS(array('email' => _('User does not exists')));
+        elseif (!password_verify($valid->out['password'], $a['passhash']))
+          throw new Except\JS(array('password' => _('Invalid password given')));
+        elseif ($a['status'] == 1)
+          throw new Except\JS(array('email' => _('This user needs to complete activation')));
 
-      // Set Cookie
-      $_SESSION['uid'] = $a['id'];
-      if ($valid->out['remember'][0] == 1)
-        $_COOKIE['uid'] = $a['id'];
+        // Set Cookie?
+        $_SESSION['uid'] = $a['id'];
+        if ($valid->out['remember'][0] == 1)
+          $_COOKIE['uid'] = $a['id'];
 
-      // Redirect
-      HTTP::redirect('', array('js'));
-      exit;
+        // Redirect
+        HTTP::redirect('', array('js'));
+        exit;
+      }
+      catch (Except\JS $e) { $e->out(); }
     }
     View::set('title', _('Account Login'));
     View::inc('user/login');

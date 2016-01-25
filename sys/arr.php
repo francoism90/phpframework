@@ -17,16 +17,5 @@ class Arr {
 		}
 		return $a;
 	}
-
-	public static function match(string $k, $v, string $p) {
-    return (${$p}[$k] == $v);
-  }
-
-	public static function set(array $a, string $p, bool $force = false) {
-    foreach ($a as $k => $v) {
-      if (empty(${$p}[$k] || $force))
-        ${$p}[$k] = $v;
-    }
-  }
 }
- ?>
+?>

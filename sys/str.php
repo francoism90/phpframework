@@ -2,9 +2,7 @@
 namespace Sys;
 class Str {
 	public static function random(int $l = 16, array $a = array()) {
-		$c = Arr::merge('config/str/random');
-		if (!empty($a)) $c = array_merge($c, $a);
-
+		$c = array_merge(Arr::merge('config/str/random'), $a);
 		$ch = implode('', $c);
 		for ($i = 0; $i < $l; $i++) {
 			$s.= $ch[mt_rand(0,strlen($ch))];
@@ -33,7 +31,7 @@ class Str {
 		return $c;
 	}
 
-	public static function match(string $a, string $b = null) {
+	public static function match(string $a, string $b) {
     return (mb_strtolower($a, 'UTF-8') === mb_strtolower($b, 'UTF-8'));
   }
 
@@ -49,7 +47,7 @@ class Str {
     return false;
   }
 
-	public static function chars(string $s, array $a, string $e = null) {
+	public static function chars(string $s, array $a, string $e = '') {
 		$r = array();
 		$c = self::count($s, $e);
     foreach ($a as $k => $v) {
@@ -66,4 +64,4 @@ class Str {
 		return substr($s, 0, strpos($s, $n));
 	}
 }
- ?>
+?>
